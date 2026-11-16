@@ -5,6 +5,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { pathToFileURL } from "node:url"
 import Base from "../../layouts/Base.astro"
 import Install from "../../components/Install.astro"
+import Shot from "../../components/Shot.astro"
 import { projects, bySlug, kindLabel, longDate, DEMO_HOST, type Project } from "../../lib/data"
 
 export function getStaticPaths() {
@@ -56,12 +57,7 @@ const url = `https://karyalabs.dev/${p.slug}/`
         <div class="links">{actions.map((a) => <a href={a.href}>{a.label}</a>)}</div>
       </div>
       {p.hasShot ? (
-        <figure class="shot">
-          <picture>
-            <source media="(prefers-color-scheme: dark)" srcset={`/shots/${p.slug}-dark.webp`}>
-            <img src={`/shots/${p.slug}-light.webp`} width="1200" height="800" alt={`A screenshot of ${p.name}`}>
-          </picture>
-        </figure>
+        <Shot slug={p.slug} name={p.name} sizes="(min-width: 1152px) 528px, (min-width: 900px) 46vw, calc(100vw - 32px)" priority />
       ) : specimen.length > 0 && (
         <ul class="specimen" aria-label={`A sample of ${p.name}`}>
           {specimen.map((s) => (

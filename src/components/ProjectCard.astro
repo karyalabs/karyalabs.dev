@@ -1,9 +1,10 @@
 ---
 // A project on the home page. The wide form puts the screenshot beside it.
 import Install from "./Install.astro"
+import Shot from "./Shot.astro"
 import { kindLabel, shortDate, DEMO_HOST, type Project } from "../lib/data"
 
-const { p, wide = false } = Astro.props as { p: Project; wide?: boolean }
+const { p, wide = false, priority = false } = Astro.props as { p: Project; wide?: boolean; priority?: boolean }
 const home = `https://karyalabs.dev/${p.slug}/`
 const actions = [
   p.get ?? { label: `About ${p.name}`, href: home },
@@ -32,12 +33,5 @@ const showShot = wide && p.hasShot
     {meta.length > 0 && <div class="meta">{meta.map((m) => <span>{m}</span>)}</div>}
     <div class="links">{actions.map((a) => <a href={a.href}>{a.label}</a>)}</div>
   </div>
-  {showShot && (
-    <figure class="shot">
-      <picture>
-        <source media="(prefers-color-scheme: dark)" srcset={`/shots/${p.slug}-dark.webp`}>
-        <img src={`/shots/${p.slug}-light.webp`} width="1200" height="800" alt={`A screenshot of ${p.name}`} loading="lazy">
-      </picture>
-    </figure>
-  )}
+  {showShot && <Shot slug={p.slug} name={p.name} sizes="(min-width: 1152px) 612px, (min-width: 900px) 55vw, calc(100vw - 32px)" priority={priority} />}
 </article>

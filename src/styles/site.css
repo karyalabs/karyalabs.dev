@@ -7,13 +7,14 @@
 @font-face { font-family: "Geist"; font-weight: 600; font-display: swap; src: url("/fonts/Geist-SemiBold.woff2") format("woff2"); }
 @font-face { font-family: "Geist Mono"; font-weight: 400; font-display: swap; src: url("/fonts/GeistMono-Regular.woff2") format("woff2"); }
 /* Only the five glyphs of कार्य (fonts/README.md). */
-@font-face { font-family: "Karya Devanagari"; font-weight: 500; font-display: block; src: url("/fonts/NotoSansDevanagari-karya-500.woff2") format("woff2"); unicode-range: U+915, U+92F-930, U+93E, U+94D; }
+@font-face { font-family: "Karya Devanagari"; font-weight: 500; font-display: swap; src: url("/fonts/NotoSansDevanagari-karya-500.woff2") format("woff2"); unicode-range: U+915, U+92F-930, U+93E, U+94D; }
 
 :root {
   --paper: #fafaf9;
   --ink: #111114;
   --ink-2: #4a4a50;
-  --stone: #8a8a90;
+  /* Brand Stone is #8A8A90; this is it darkened to 4.5:1 on paper and well. */
+  --stone: #6a6a70;
   --rule: #e4e4e1;
   --rule-strong: #cfcfcb;
   --well: #f1f1ef;

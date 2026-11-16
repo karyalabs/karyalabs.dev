@@ -1,6 +1,7 @@
 // Fetches what the pages need from outside the repository, before
 // `astro build`: each project's latest GitHub releases (src/generated/
-// releases.json) and its screenshots from karyalabs/assets (public/shots/).
+// releases.json) and its screenshots from karyalabs/assets (public/shots/,
+// 1200 px, with 640 and 960 px copies for phones and narrow columns).
 // The pages never call GitHub, so visitors make no third-party requests.
 //
 //   node scripts/prebuild.mjs                       fetch everything
@@ -11,6 +12,7 @@
 // GITHUB_TOKEN raises the API limit. In CI (CI=true) a failed fetch fails
 // the build; locally it warns and the pages leave versions out.
 import { mkdirSync, writeFileSync, readFileSync, existsSync, copyFileSync } from "node:fs";
+import sharp from "sharp";
 import { loadProjects } from "../src/lib/registry.mjs";
 
 const args = process.argv.slice(2);
@@ -96,6 +98,9 @@ async function fetchShots() {
           const res = await fetch(`https://raw.githubusercontent.com/karyalabs/assets/main/${name}`);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+        }
+        for (const w of [640, 960]) {
+          await sharp(dest.pathname).resize(w).webp({ quality: 80 }).toFile(new URL(`${p.slug}-${theme}-${w}.webp`, dir).pathname);
         }
       } catch (e) {
         fail(`screenshot ${name}: ${e.message}`);
