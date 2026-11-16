@@ -142,7 +142,8 @@ a.layer:hover { border-color: var(--ink-2); }
 .rel .s { color: var(--ink-2); min-width: 0; }
 .rel a.notes { font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
 .rel a.notes:hover { text-decoration: underline; }
-.rel.short li { grid-template-columns: 7.5em 7em minmax(0, 1fr); }
+.rel.short li { grid-template-columns: 7.5em minmax(0, 1fr); gap: 4px 16px; }
+.rel.short .s { grid-column: 1 / -1; }
 @media (max-width: 760px) { .rel li, .rel.short li { grid-template-columns: auto auto 1fr; gap: 4px 12px; } .rel .s { grid-column: 1 / -1; } .rel a.notes { display: none; } }
 
 /* How the work is done */
