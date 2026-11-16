@@ -1,0 +1,43 @@
+---
+// demo.karyalabs.dev/ (worker.js serves this file there).
+import Base from "../../layouts/Base.astro"
+import { projects, DEMO_HOST } from "../../lib/data"
+
+const demos = projects.filter((p) => p.demo)
+const without = projects.filter((p) => !p.demo)
+---
+<Base
+  title="Karya Labs demos"
+  description="Try Karya Labs projects in your browser. No account and no install."
+  url={`${DEMO_HOST}/`}
+  current="demos"
+>
+  <section class="d-hero">
+    <div class="wrap">
+      <span class="label">demo.karyalabs.dev</span>
+      <h1>Try it in your browser<span class="stop" aria-hidden="true"></span></h1>
+      <p class="lede">No account and no install. Each demo is the real app compiled to WebAssembly, so the first load takes a few seconds.</p>
+    </div>
+  </section>
+  <div class="wrap">
+    <ul class="demos">
+      {demos.map((p) => (
+        <li>
+          <img class="icon" src={`/icons/${p.icon}`} width="48" height="48" alt="">
+          <div>
+            <h2>{p.name}</h2>
+            <p>{p.demo!.note}</p>
+            <div class="req">demo.karyalabs.dev/{p.slug}{p.demo!.requires && ` · needs ${p.demo!.requires}`}</div>
+          </div>
+          <a class="btn" href={`${DEMO_HOST}/${p.slug}/`} aria-label={`Open the ${p.name} demo`}>Open the demo →</a>
+        </li>
+      ))}
+    </ul>
+    {without.length > 0 && (
+      <p class="note">
+        {without.map((p, i) => <>{i > 0 && (i === without.length - 1 ? " and " : ", ")}<a href={`https://karyalabs.dev/${p.slug}/`}>{p.name}</a></>)}
+        {without.length === 1 ? " has" : " have"} no demo yet.
+      </p>
+    )}
+  </div>
+</Base>

@@ -1,0 +1,98 @@
+---
+import "../styles/site.css"
+import Mark from "../components/Mark.astro"
+import { projects } from "../lib/data"
+
+interface Props {
+  title: string
+  description: string
+  /** The page's address, for canonical and Open Graph. */
+  url: string
+  current?: "home" | "demos"
+}
+const { title, description, url, current } = Astro.props
+const HOME = "https://karyalabs.dev"
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111114" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href={url}>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="application/atom+xml" title="Karya Labs releases" href={`${HOME}/feed.xml`}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Karya Labs">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={url}>
+<link rel="preload" href="/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<slot name="head" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="lockup" href={`${HOME}/`} aria-label="Karya Labs home">
+      <Mark />
+      <span aria-hidden="true">KARYA <i>LABS</i></span>
+    </a>
+    <nav aria-label="Main">
+      <a href={`${HOME}/#projects`}>Projects</a>
+      <a href="https://demo.karyalabs.dev/" aria-current={current === "demos" ? "page" : undefined}>Demos</a>
+      <a href={`${HOME}/#releases`} class="opt">Releases</a>
+      <a href="https://github.com/karyalabs">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<slot />
+</main>
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <Mark class="mark" />
+        <p><span lang="hi">कार्य</span> (kārya) means work: a task carried through to the end. The mark is a k and a full stop, the work and the point where it's done.</p>
+      </div>
+      <div>
+        <h2>Projects</h2>
+        <ul>{projects.map((p) => <li><a href={`${HOME}/${p.slug}/`}>{p.name}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>Elsewhere</h2>
+        <ul>
+          <li><a href="https://demo.karyalabs.dev/">Demos</a></li>
+          <li><a href="https://github.com/karyalabs">GitHub</a></li>
+          <li><a href={`${HOME}/feed.xml`}>Release feed</a></li>
+          <li><a href="https://github.com/karyalabs/.github/tree/main/brand">Brand</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal"><span>© {new Date().getFullYear()} Karya Labs · Made by Kumar Arya</span><span>No cookies. No analytics.</span></div>
+  </div>
+</footer>
+<script is:inline>
+// Copy buttons for install lines; hidden where the clipboard isn't available.
+if (navigator.clipboard) {
+  for (const b of document.querySelectorAll("[data-copy]")) {
+    b.hidden = false
+    b.addEventListener("click", () => {
+      navigator.clipboard.writeText(b.dataset.copy).then(() => {
+        b.textContent = "Copied"
+        setTimeout(() => (b.textContent = "Copy"), 1400)
+      }, () => {})
+    })
+  }
+}
+</script>
+</body>
+</html>

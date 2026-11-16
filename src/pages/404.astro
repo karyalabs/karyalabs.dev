@@ -1,0 +1,18 @@
+---
+import Base from "../layouts/Base.astro"
+import { projects } from "../lib/data"
+---
+<Base title="Not found · Karya Labs" description="Nothing at this address." url="https://karyalabs.dev/404/">
+  <div class="wrap nf">
+    <span class="mono" id="path">karyalabs.dev</span>
+    <h1>Nothing at this address<span class="stop" aria-hidden="true"></span></h1>
+    <ul>
+      {projects.map((p) => (
+        <li><a href={`https://karyalabs.dev/${p.slug}/`}><img src={`/icons/${p.icon}`} width="28" height="28" alt=""><span class="n">{p.name}</span><span class="t">{p.tagline.replace(/\.$/, "")}</span></a></li>
+      ))}
+    </ul>
+  </div>
+  <script is:inline>
+    document.getElementById("path").textContent = location.host + location.pathname
+  </script>
+</Base>

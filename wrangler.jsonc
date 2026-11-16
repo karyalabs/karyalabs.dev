@@ -1,0 +1,23 @@
+// karyalabs.dev, the hub (README.md). Routes, not custom domains, so the
+// projects' own Workers keep their more specific routes on the same hosts.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "karyalabs-hub",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": false,
+  "routes": [
+    // Each needs a proxied DNS record for its host; both already exist for
+    // Matty's routes (karyalabs/matty docs/web.md).
+    { "pattern": "karyalabs.dev/*", "zone_name": "karyalabs.dev" },
+    { "pattern": "demo.karyalabs.dev/*", "zone_name": "karyalabs.dev" }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "force-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "observability": { "enabled": true }
+}

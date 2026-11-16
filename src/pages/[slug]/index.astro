@@ -1,0 +1,106 @@
+---
+// The page at karyalabs.dev/<slug>/ for every project in the registry. A
+// project that serves its own site there covers this one (README.md).
+import { existsSync, readdirSync, readFileSync } from "node:fs"
+import { pathToFileURL } from "node:url"
+import Base from "../../layouts/Base.astro"
+import Install from "../../components/Install.astro"
+import { projects, bySlug, kindLabel, longDate, DEMO_HOST, type Project } from "../../lib/data"
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { p } }))
+}
+const { p } = Astro.props as { p: Project }
+
+const actions = [
+  ...(p.get ? [p.get] : []),
+  ...(p.demo ? [{ label: "Try the demo", href: `${DEMO_HOST}/${p.slug}/` }] : []),
+  ...p.links,
+  ...(p.releases.length ? [{ label: "Releases", href: `https://github.com/${p.repo}/releases` }] : []),
+]
+
+// A project with no screenshot can show a specimen (src/specimens/README.md).
+const specimenDir = new URL(`src/specimens/${p.slug}/`, pathToFileURL(`${process.cwd()}/`))
+const specimen = !p.hasShot && existsSync(specimenDir)
+  ? readdirSync(specimenDir).filter((f) => f.endsWith(".svg")).sort().map((f) => ({
+      name: f.replace(/\.svg$/, ""),
+      // The icon's own shapes; .specimen svg in site.css sets the stroke.
+      body: readFileSync(new URL(f, specimenDir), "utf8").replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, ""),
+    }))
+  : []
+
+const facts = [
+  ...(p.latest ? [{ label: "Latest", value: `${p.latest.version} · ${longDate(p.latest.date)}` }] : []),
+  ...p.facts,
+  ...(p.platforms.length ? [{ label: p.kind === "app" ? "Platforms" : "Targets", value: p.platforms.join(", ") }] : []),
+  ...(p.language ? [{ label: "Language", value: p.language }] : []),
+  ...(p.license ? [{ label: "License", value: p.license }] : []),
+  { label: "Source", value: `github.com/${p.repo}` },
+]
+const builtWith = p.built_with.map(bySlug).filter(Boolean) as Project[]
+const usedBy = p.used_by.map(bySlug).filter(Boolean) as Project[]
+const url = `https://karyalabs.dev/${p.slug}/`
+---
+<Base title={`${p.name}: ${p.tagline.replace(/\.$/, "")}`} description={p.summary} url={url}>
+  <div class="wrap">
+    <div class="crumb"><a href="https://karyalabs.dev/">karyalabs.dev</a> / {p.slug}</div>
+    <div class="p-hero">
+      <div class="proj">
+        <span class="label"><span class:list={["dot", { open: p.status === "experimental" }]}></span>{kindLabel(p)}</span>
+        <div class="proj-top">
+          <img class="icon" src={`/icons/${p.icon}`} width="64" height="64" alt="">
+          <h1>{p.name}</h1>
+        </div>
+        <p class="tagline">{p.tagline}</p>
+        {p.install && <Install line={p.install} />}
+        <div class="links">{actions.map((a) => <a href={a.href}>{a.label}</a>)}</div>
+      </div>
+      {p.hasShot ? (
+        <figure class="shot">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset={`/shots/${p.slug}-dark.webp`}>
+            <img src={`/shots/${p.slug}-light.webp`} width="1200" height="800" alt={`A screenshot of ${p.name}`}>
+          </picture>
+        </figure>
+      ) : specimen.length > 0 && (
+        <ul class="specimen" aria-label={`A sample of ${p.name}`}>
+          {specimen.map((s) => (
+            <li><svg viewBox="0 0 24 24" aria-hidden="true" set:html={s.body} /><span>{s.name}</span></li>
+          ))}
+        </ul>
+      )}
+    </div>
+    <div class="p-body">
+      <div class="prose">
+        <h2>What it is</h2>
+        <p>{p.summary}</p>
+        {p.about.map((para) => <p>{para}</p>)}
+        {builtWith.length > 0 && (
+          <>
+            <h2 class="later">Built with</h2>
+            <div class="chips">{builtWith.map((q) => <a class="chip" href={`https://karyalabs.dev/${q.slug}/`}><img src={`/icons/${q.icon}`} width="20" height="20" alt="" />{q.name}</a>)}</div>
+          </>
+        )}
+        {usedBy.length > 0 && (
+          <>
+            <h2 class="later">Used by</h2>
+            <div class="chips">{usedBy.map((q) => <a class="chip" href={`https://karyalabs.dev/${q.slug}/`}><img src={`/icons/${q.icon}`} width="20" height="20" alt="" />{q.name}</a>)}</div>
+          </>
+        )}
+      </div>
+      <div>
+        <dl class="facts">{facts.map((f) => <><dt>{f.label}</dt><dd>{f.value}</dd></>)}</dl>
+        {p.releases.length > 0 && (
+          <>
+            <h2 class="later">Recent releases</h2>
+            <ol class="rel short">
+              {p.releases.slice(0, 3).map((r) => (
+                <li><time datetime={r.date}>{r.date}</time><a class="v" href={r.url}>{r.version}</a><span class="s">{r.summary || "Release notes on GitHub."}</span></li>
+              ))}
+            </ol>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,23 @@
+{
+  "name": "karyalabs-dev",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/prebuild.mjs && astro build && node scripts/check-dist.mjs",
+    "check": "astro check",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node scripts/test-worker.mjs"
+  },
+  "dependencies": {
+    "astro": "7.4.5",
+    "smol-toml": "1.6.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@types/node": "24.10.1",
+    "typescript": "6.0.2",
+    "wrangler": "4.156.2"
+  }
+}
