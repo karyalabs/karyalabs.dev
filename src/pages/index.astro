@@ -25,6 +25,7 @@ const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : 
   url="https://karyalabs.dev/"
   current="home"
 >
+  <link slot="preload" rel="preload" href="/fonts/NotoSansDevanagari-karya-500.woff2" as="font" type="font/woff2" crossorigin>
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
@@ -44,7 +45,7 @@ const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : 
         <h2>Projects<span class="stop" aria-hidden="true"></span></h2>
         <span class="aside">{count(apps.length, "app", "apps")}, {count(libraries.length, "library", "libraries")}</span>
       </div>
-      {apps.map((p) => <ProjectCard p={p} wide />)}
+      {apps.map((p, i) => <ProjectCard p={p} wide priority={i === 0} />)}
       <div class="grid">{libraries.map((p) => <ProjectCard p={p} />)}</div>
     </div>
   </section>
