@@ -73,8 +73,8 @@ deploys from `main` on push, on a `project-released` dispatch, daily, and by
 hand. Builds run on the organization's self-hosted Linux runner when the
 `KARYA_LINUX_RUNNER` variable is set, and on GitHub's runners otherwise.
 
-The deploy needs the organization secrets `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID`. The token needs **Workers Scripts: Edit** on the
+The deploy needs the organization secret `CLOUDFLARE_API_TOKEN` and the
+organization variable `CLOUDFLARE_ACCOUNT_ID`. The token needs **Workers Scripts: Edit** on the
 account and **Workers Routes: Edit** on the `karyalabs.dev` zone. Both hosts
 already have proxied DNS records for Matty's routes.
 
