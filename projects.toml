@@ -41,7 +41,8 @@ language = "Rust"
 license = "MIT"
 platforms = ["macOS", "Linux", "Windows", "Web"]
 built_with = ["gpuicn", "gpui-icons"]
-get = { label = "Get Matty", href = "https://karyalabs.dev/matty/" }
+get = { label = "Get Matty", href = "https://karyalabs.dev/matty/#download" }
+# Matty's own site is karyalabs.dev/matty/ and its web app karyalabs.dev/matty/app/.
 links = [{ label = "GitHub", href = "https://github.com/karyalabs/matty" }]
 demo = { note = "A sample workspace with channels, threads and people. Nothing to connect, no account, no server." }
 
