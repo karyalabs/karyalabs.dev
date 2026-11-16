@@ -1,0 +1,100 @@
+name: Site
+
+# Builds karyalabs.dev on every pull request, and builds and deploys it from
+# main: on push, when a project's release workflow sends a
+# `project-released` repository_dispatch, once a day (so versions and dates
+# never go stale), and by hand.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [project-released]
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  runners:
+    # The organization's runner variable holds a runs-on value such as
+    # ["self-hosted","Linux","X64","matty"]. Unset, or for a pull request
+    # from a fork, the jobs get GitHub's runners.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      linux: ${{ steps.pick.outputs.linux }}
+    steps:
+      - id: pick
+        uses: karyalabs/.github/actions/pick-runners@v1
+        with:
+          linux: ${{ vars.KARYA_LINUX_RUNNER }}
+
+  build:
+    needs: runners
+    runs-on: ${{ fromJSON(needs.runners.outputs.linux) }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Set up Bun
+        run: |
+          if [ -x "$HOME/.bun/bin/bun" ]; then
+            echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+          elif ! command -v bun >/dev/null; then
+            npm install --global --no-fund --no-audit bun
+          fi
+      - run: bun install --frozen-lockfile
+      - name: Type check
+        run: bun run check
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bun run build
+      - name: Check the Worker's answers
+        run: bun run test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+  deploy:
+    name: deploy karyalabs.dev
+    needs: [runners, build]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ${{ fromJSON(needs.runners.outputs.linux) }}
+    timeout-minutes: 10
+    env:
+      # Set once for the organization: the token as a secret, the account ID
+      # as a variable (a secret also works).
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}
+      HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - if: env.HAS_TOKEN != 'true' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: |
+          echo "::error::The CLOUDFLARE_API_TOKEN secret or the CLOUDFLARE_ACCOUNT_ID variable is not available to this repository"
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx --yes wrangler@4.156.2 deploy

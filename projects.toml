@@ -1,0 +1,86 @@
+# Every Karya Labs project, in the order the home page lists them.
+#
+# The hub builds a home card, a page at karyalabs.dev/<slug>/ and a demo slot
+# at demo.karyalabs.dev/<slug>/ for each entry. A project that deploys its own
+# Worker route for either path (karyalabs.dev/<slug>*) covers the hub's
+# version, because Cloudflare runs the most specific route. Versions and dates
+# come from the project's GitHub releases at build time; never type them here.
+#
+# Fields (src/lib/projects.ts checks them; the build fails on a mistake):
+#   slug        the path on both hosts; lowercase, unique, not reserved
+#   name        display name
+#   repo        owner/name on GitHub
+#   kind        "app" or "library"
+#   status      optional: "experimental", "beta", "stable" or "archived"
+#   tagline     one sentence, shown everywhere the project is
+#   summary     two or three sentences for the card and the project page
+#   about       optional paragraphs for the project page
+#   icon        a file under public/icons/
+#   shot        optional: karyalabs/assets path without "-light-1200.webp"
+#   install     optional: one shell line people copy
+#   get         optional: { label, href } for the main action
+#   links       optional: more { label, href } actions
+#   facts       optional: { label, value } rows for the project page
+#   language, license, platforms   shown on cards and the project page
+#   built_with  slugs of other projects this one uses
+#   demo        optional: { note, requires?, redirect? }. With redirect, the hub
+#               answers demo.karyalabs.dev/<slug>/ with a 302 there; without,
+#               the project serves its own demo. No demo: left out of the index.
+
+[[project]]
+slug = "matty"
+name = "Matty"
+repo = "karyalabs/matty"
+kind = "app"
+status = "beta"
+tagline = "A fast, native Mattermost client."
+summary = "One small process with no browser inside. It opens in a fraction of a second, switches channels without a spinner, and keeps working offline."
+icon = "matty.svg"
+shot = "matty/site/channel"
+language = "Rust"
+license = "MIT"
+platforms = ["macOS", "Linux", "Windows", "Web"]
+built_with = ["gpuicn", "gpui-icons"]
+get = { label = "Get Matty", href = "https://karyalabs.dev/matty/" }
+links = [{ label = "GitHub", href = "https://github.com/karyalabs/matty" }]
+demo = { note = "A sample workspace with channels, threads and people. Nothing to connect, no account, no server." }
+
+[[project]]
+slug = "gpuicn"
+name = "gpuicn"
+repo = "karyalabs/gpuicn"
+kind = "library"
+status = "experimental"
+tagline = "Native, editable UI components for GPUI."
+summary = "45 components in the style of shadcn/ui, from Button and Dialog to Sidebar and Virtual List. The CLI copies the Rust source into your app, so you own every line."
+icon = "gpuicn.png"
+install = "cargo install gpuicn-cli"
+language = "Rust"
+license = "MIT"
+built_with = ["gpui-icons"]
+get = { label = "Catalog", href = "https://karyalabs.dev/gpuicn/" }
+links = [{ label = "GitHub", href = "https://github.com/karyalabs/gpuicn" }]
+demo = { note = "Every component in one GPUI app, grouped and searchable, in light and dark.", requires = "WebGPU or WebGL 2", redirect = "https://karyalabs.dev/gpuicn/app/" }
+
+[[project]]
+slug = "gpui-icons"
+name = "gpui-icons"
+repo = "karyalabs/gpui-icons"
+kind = "library"
+tagline = "The complete Lucide icon set for GPUI."
+summary = "1,924 icons and 269 aliases, embedded in your app from the original SVGs. Native and WebAssembly builds use the same assets and fetch nothing at runtime."
+about = [
+  "Look icons up by enum, by name or by alias. Names round-trip through config files, so a setting can store an icon by name.",
+  "It is a standalone library that works with any GPUI app, and gpuicn is one of the projects that uses it. It is not affiliated with Lucide.",
+]
+icon = "gpui-icons.svg"
+install = "cargo add gpui-icons"
+language = "Rust 1.98 or newer"
+license = "MIT and ISC"
+platforms = ["Native", "WebAssembly"]
+get = { label = "Usage", href = "https://github.com/karyalabs/gpui-icons#use" }
+links = [{ label = "GitHub", href = "https://github.com/karyalabs/gpui-icons" }]
+facts = [
+  { label = "Icons", value = "1,924, plus 269 aliases" },
+  { label = "Source", value = "Lucide 1.63.0" },
+]

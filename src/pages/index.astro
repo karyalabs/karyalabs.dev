@@ -1,0 +1,113 @@
+---
+import Base from "../layouts/Base.astro"
+import ProjectCard from "../components/ProjectCard.astro"
+import { projects, allReleases, bySlug, type Project } from "../lib/data"
+
+const apps = projects.filter((p) => p.kind === "app")
+const libraries = projects.filter((p) => p.kind === "library")
+
+// The stack: each project sits above what it is built with.
+const level = (p: Project, seen = new Set<string>()): number => {
+  if (seen.has(p.slug)) return 0
+  seen.add(p.slug)
+  return Math.max(-1, ...p.built_with.map((s) => level(bySlug(s)!, seen))) + 1
+}
+const stack = [...projects].sort((a, b) => level(b) - level(a))
+
+const recent = allReleases.slice(0, 6)
+const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)
+const lastMonth = allReleases.filter((r) => r.date >= since).length
+const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
+---
+<Base
+  title="Karya Labs"
+  description="Karya Labs makes open-source native apps, and the tools they're built with: Matty, gpuicn and gpui-icons."
+  url="https://karyalabs.dev/"
+  current="home"
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="deva" lang="hi" aria-hidden="true">कार्य</p>
+        <p class="entry"><span>kārya</span><em>noun</em><span>work; a task carried through to the end</span></p>
+      </div>
+      <div>
+        <h1>Work, carried through to the end<span class="stop" aria-hidden="true"></span></h1>
+        <p class="lede">Karya Labs makes open-source native apps, and the tools they're built with. Everything here is written in Rust on GPUI and released in the open.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="head">
+        <h2>Projects<span class="stop" aria-hidden="true"></span></h2>
+        <span class="aside">{count(apps.length, "app", "apps")}, {count(libraries.length, "library", "libraries")}</span>
+      </div>
+      {apps.map((p) => <ProjectCard p={p} wide />)}
+      <div class="grid">{libraries.map((p) => <ProjectCard p={p} />)}</div>
+    </div>
+  </section>
+
+  <section class="section" id="stack">
+    <div class="wrap stack-grid">
+      <div class="stack-copy">
+        <div class="head"><h2>One stack<span class="stop" aria-hidden="true"></span></h2></div>
+        <p>The libraries exist because the app needed them. Matty is built from gpuicn's components and gpui-icons' icons, so each library is used in a real app before it ships.</p>
+        <p>Every app pushes the libraries forward, and every fix in a library reaches the app in its next release.</p>
+      </div>
+      <ol class="layers" aria-label="How the projects build on each other">
+        {stack.map((p, i) => (
+          <li style={`--depth: ${i}`}>
+            <a class="layer" href={`https://karyalabs.dev/${p.slug}/`}>
+              <img src={`/icons/${p.icon}`} width="24" height="24" alt="">
+              <span class="n">{p.name} <span class="d">· {p.tagline.replace(/\.$/, "")}</span></span>
+              <span class="r">{p.built_with.length ? "built with ↓" : "runs on ↓"}</span>
+            </a>
+          </li>
+        ))}
+        <li style={`--depth: ${stack.length}`}>
+          <a class="layer base" href="https://www.gpui.rs/">
+            <span class="blank" aria-hidden="true"></span>
+            <span class="n">GPUI <span class="d">· the GPU-accelerated UI framework behind Zed</span></span>
+            <span class="r">upstream</span>
+          </a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  {recent.length > 0 && (
+    <section class="section" id="releases">
+      <div class="wrap">
+        <div class="head">
+          <h2>Releases<span class="stop" aria-hidden="true"></span></h2>
+          <a class="aside" href="/feed.xml">feed.xml</a>
+        </div>
+        <ol class="rel">
+          {recent.map((r) => (
+            <li>
+              <time datetime={r.date}>{r.date}</time>
+              <a class="p" href={`https://karyalabs.dev/${r.project.slug}/`}>{r.project.name}</a>
+              <span class="v">{r.version}</span>
+              <span class="s">{r.summary || r.project.tagline}</span>
+              <a class="notes" href={r.url}>Notes →</a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="head"><h2>How the work is done<span class="stop" aria-hidden="true"></span></h2></div>
+      <div class="ways">
+        <div class="way"><h3><span class="dot"></span>Native</h3><p>One process and no browser inside. Apps start fast and stay light on memory.</p><span class="proof">Matty: first window in 217 ms</span></div>
+        <div class="way"><h3><span class="dot"></span>Open source</h3><p>Every project is open source and developed in public, issues and plans included.</p><span class="proof">github.com/karyalabs</span></div>
+        <div class="way"><h3><span class="dot"></span>No tracking</h3><p>No cookies, no analytics and no third-party requests, on this site or any project site.</p><span class="proof">Download counts only, never people</span></div>
+        <div class="way"><h3><span class="dot"></span>Shipped often</h3><p>Small releases, each with written notes. Matty's betas update themselves.</p>{lastMonth > 0 && <span class="proof">{count(lastMonth, "release", "releases")} in the last 30 days</span>}</div>
+      </div>
+    </div>
+  </section>
+</Base>

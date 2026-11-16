@@ -1,0 +1,43 @@
+---
+// A project on the home page. The wide form puts the screenshot beside it.
+import Install from "./Install.astro"
+import { kindLabel, shortDate, DEMO_HOST, type Project } from "../lib/data"
+
+const { p, wide = false } = Astro.props as { p: Project; wide?: boolean }
+const home = `https://karyalabs.dev/${p.slug}/`
+const actions = [
+  p.get ?? { label: `About ${p.name}`, href: home },
+  ...(p.demo ? [{ label: "Try the demo", href: `${DEMO_HOST}/${p.slug}/` }] : []),
+  ...p.links,
+]
+const meta = [
+  p.latest && `v${p.latest.version} · ${shortDate(p.latest.date)}`,
+  p.platforms.length && p.kind === "app" ? p.platforms.join(" · ") : [p.language, p.license].filter(Boolean).join(" · "),
+].filter(Boolean)
+const showShot = wide && p.hasShot
+---
+<article class:list={[showShot ? "feature" : "proj"]}>
+  <div class="proj">
+    <span class="label"><span class:list={["dot", { open: p.status === "experimental" }]}></span>{kindLabel(p)}</span>
+    <div class="proj-top">
+      <img class="icon" src={`/icons/${p.icon}`} width="48" height="48" alt="">
+      <div>
+        <h3><a href={home}>{p.name}</a></h3>
+        <div class="path">karyalabs.dev/{p.slug}</div>
+      </div>
+    </div>
+    <p class="tagline">{p.tagline}</p>
+    <p class="summary">{p.summary}</p>
+    {p.install && <Install line={p.install} />}
+    {meta.length > 0 && <div class="meta">{meta.map((m) => <span>{m}</span>)}</div>}
+    <div class="links">{actions.map((a) => <a href={a.href}>{a.label}</a>)}</div>
+  </div>
+  {showShot && (
+    <figure class="shot">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset={`/shots/${p.slug}-dark.webp`}>
+        <img src={`/shots/${p.slug}-light.webp`} width="1200" height="800" alt={`A screenshot of ${p.name}`} loading="lazy">
+      </picture>
+    </figure>
+  )}
+</article>

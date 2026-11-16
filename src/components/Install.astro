@@ -1,0 +1,4 @@
+---
+const { line } = Astro.props as { line: string }
+---
+<div class="install"><code>{line}</code><button class="copy" type="button" data-copy={line} hidden>Copy</button></div>
