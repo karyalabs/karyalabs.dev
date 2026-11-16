@@ -43,8 +43,12 @@ for (const [url, status, expect] of cases) {
   const where = res.headers.get("Location") ?? ""
   const body = where ? "" : await res.text()
   const ok = res.status === status && (where.includes(expect) || body.includes(expect))
-  if (!ok) failed++
-  console.log(`${ok ? "ok  " : "FAIL"} ${url} -> ${res.status} ${where}`)
+  // Every answer carries the security headers (worker.js SECURITY).
+  const csp = res.headers.get("Content-Security-Policy") ?? ""
+  const headers = csp.includes("script-src 'self';") && res.headers.has("Strict-Transport-Security")
+  const cache = !url.includes("/fonts/") || res.headers.get("Cache-Control")?.includes("immutable")
+  if (!ok || !headers || !cache) failed++
+  console.log(`${ok && headers && cache ? "ok  " : "FAIL"} ${url} -> ${res.status} ${where}${headers ? "" : " (security headers missing)"}${cache ? "" : " (not cached as immutable)"}`)
 }
 if (failed) {
   console.error(`${failed} of ${cases.length} failed`)

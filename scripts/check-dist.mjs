@@ -20,7 +20,7 @@ const walk = (dir) => {
       for (const m of html.matchAll(/<(?:script|link|img|source)\b[^>]*\b(?:src|href|srcset)="(https?:)?\/\/[^"]*"/g)) {
         if (!/rel="(?:canonical|alternate)"/.test(m[0])) offsite.push(`${path.slice(dist.length)}: ${m[0]}`);
       }
-      // The CSP in public/_headers blocks inline scripts and event handlers.
+      // The CSP in worker.js blocks inline scripts and event handlers.
       if (/<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+="/.test(html)) inline.push(path.slice(dist.length));
     }
   }
