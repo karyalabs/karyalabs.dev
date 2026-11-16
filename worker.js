@@ -11,7 +11,7 @@
 
 const DEMO_HOST = "demo.karyalabs.dev"
 // Files the pages load from their own host, on either host.
-const SHARED = /^\/(fonts|icons|shots|_astro)\/|^\/(favicon\.svg|favicon\.ico|apple-touch-icon\.png|robots\.txt)$/
+const SHARED = /^\/(fonts|icons|shots|_astro)\/|^\/(site\.js|favicon\.svg|favicon\.ico|apple-touch-icon\.png|robots\.txt)$/
 
 async function notFound(env, url) {
   const page = await env.ASSETS.fetch(new URL("/404.html", url))

@@ -31,7 +31,7 @@ export const projects: Project[] = (loadProjects() as Omit<Project, "releases" |
     ...p,
     releases: list,
     latest: list[0],
-    hasShot: Boolean(p.shot) && ["light", "dark"].every((t) => [".webp", "-640.webp", "-960.webp"].every((s) => existsSync(new URL(`${p.slug}-${t}${s}`, shotsDir)))),
+    hasShot: Boolean(p.shot) && ["light", "dark"].every((t) => [".webp", "-480.webp", "-720.webp", "-960.webp"].every((s) => existsSync(new URL(`${p.slug}-${t}${s}`, shotsDir)))),
   }
 })
 

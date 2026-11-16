@@ -34,7 +34,9 @@ const HOME = "https://karyalabs.dev"
 <meta property="og:description" content={description}>
 <meta property="og:url" content={url}>
 <link rel="preload" href="/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <slot name="preload" />
 <slot name="head" />
 </head>
@@ -81,19 +83,6 @@ const HOME = "https://karyalabs.dev"
     <div class="legal"><span>© {new Date().getFullYear()} Karya Labs · Made by Kumar Arya</span><span>No cookies. No analytics.</span></div>
   </div>
 </footer>
-<script is:inline>
-// Copy buttons for install lines; hidden where the clipboard isn't available.
-if (navigator.clipboard) {
-  for (const b of document.querySelectorAll("[data-copy]")) {
-    b.hidden = false
-    b.addEventListener("click", () => {
-      navigator.clipboard.writeText(b.dataset.copy).then(() => {
-        b.textContent = "Copied"
-        setTimeout(() => (b.textContent = "Copy"), 1400)
-      }, () => {})
-    })
-  }
-}
-</script>
+<script src="/site.js" defer></script>
 </body>
 </html>
