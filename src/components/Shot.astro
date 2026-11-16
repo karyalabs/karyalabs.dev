@@ -1,10 +1,10 @@
 ---
-// A project's screenshot, light or dark with the system, at 640, 960 or 1200 px.
+// A project's screenshot, light or dark with the system, at 480, 720, 960 or 1200 px.
 // `priority` for the one that is the page's largest paint: loaded first,
 // never lazily.
 interface Props { slug: string; name: string; sizes: string; priority?: boolean }
 const { slug, name, sizes, priority = false } = Astro.props
-const set = (theme: string) => `/shots/${slug}-${theme}-640.webp 640w, /shots/${slug}-${theme}-960.webp 960w, /shots/${slug}-${theme}.webp 1200w`
+const set = (theme: string) => `/shots/${slug}-${theme}-480.webp 480w, /shots/${slug}-${theme}-720.webp 720w, /shots/${slug}-${theme}-960.webp 960w, /shots/${slug}-${theme}.webp 1200w`
 ---
 <figure class="shot">
   <picture>

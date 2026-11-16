@@ -34,6 +34,7 @@ const cases = [
   ["https://demo.karyalabs.dev/nothing-here/", 404, "Nothing at this address"],
   ["https://demo.karyalabs.dev/fonts/Geist-Regular.woff2", 200, ""],
   ["https://demo.karyalabs.dev/icons/gpuicn.webp", 200, ""],
+  ["https://demo.karyalabs.dev/site.js", 200, ""],
 ]
 
 let failed = 0

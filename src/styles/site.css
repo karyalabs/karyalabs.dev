@@ -2,10 +2,10 @@
    rules instead of boxes, and no accent colour. The only colour on a page
    comes from the projects' own icons and screenshots. */
 
-@font-face { font-family: "Geist"; font-weight: 400; font-display: swap; src: url("/fonts/Geist-Regular.woff2") format("woff2"); }
-@font-face { font-family: "Geist"; font-weight: 500; font-display: swap; src: url("/fonts/Geist-Medium.woff2") format("woff2"); }
-@font-face { font-family: "Geist"; font-weight: 600; font-display: swap; src: url("/fonts/Geist-SemiBold.woff2") format("woff2"); }
-@font-face { font-family: "Geist Mono"; font-weight: 400; font-display: swap; src: url("/fonts/GeistMono-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Geist"; font-weight: 400; font-display: swap; src: url("/fonts/Geist-Regular.woff2") format("woff2"); unicode-range: U+0000-024F, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-21FF, U+2212, U+2215; }
+@font-face { font-family: "Geist"; font-weight: 500; font-display: swap; src: url("/fonts/Geist-Medium.woff2") format("woff2"); unicode-range: U+0000-024F, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-21FF, U+2212, U+2215; }
+@font-face { font-family: "Geist"; font-weight: 600; font-display: swap; src: url("/fonts/Geist-SemiBold.woff2") format("woff2"); unicode-range: U+0000-024F, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-21FF, U+2212, U+2215; }
+@font-face { font-family: "Geist Mono"; font-weight: 400; font-display: swap; src: url("/fonts/GeistMono-Regular.woff2") format("woff2"); unicode-range: U+0000-024F, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-21FF, U+2212, U+2215; }
 /* Only the five glyphs of कार्य (fonts/README.md). */
 @font-face { font-family: "Karya Devanagari"; font-weight: 500; font-display: swap; src: url("/fonts/NotoSansDevanagari-karya-500.woff2") format("woff2"); unicode-range: U+915, U+92F-930, U+93E, U+94D; }
 

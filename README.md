@@ -82,5 +82,6 @@ already have proxied DNS records for Matty's routes.
 
 No cookies, no analytics and no third-party requests. Fonts, icons and
 screenshots are served from this site; `scripts/check-dist.mjs` fails the
-build if a page loads anything from another host. The only script is the one
-that shows the copy buttons.
+build if a page loads anything from another host. The only script is
+`public/site.js` (copy buttons, and the address on the 404 page). The CSP in
+`public/_headers` allows no inline scripts, so check-dist fails on one too.

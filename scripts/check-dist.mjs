@@ -10,6 +10,7 @@ for (const p of loadProjects()) need.push(`${p.slug}/index.html`);
 const missing = need.filter((f) => !existsSync(join(dist, f)));
 
 const offsite = [];
+const inline = [];
 const walk = (dir) => {
   for (const name of readdirSync(dir)) {
     const path = join(dir, name);
@@ -19,14 +20,17 @@ const walk = (dir) => {
       for (const m of html.matchAll(/<(?:script|link|img|source)\b[^>]*\b(?:src|href|srcset)="(https?:)?\/\/[^"]*"/g)) {
         if (!/rel="(?:canonical|alternate)"/.test(m[0])) offsite.push(`${path.slice(dist.length)}: ${m[0]}`);
       }
+      // The CSP in public/_headers blocks inline scripts and event handlers.
+      if (/<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+="/.test(html)) inline.push(path.slice(dist.length));
     }
   }
 };
 walk(dist);
 
-if (missing.length || offsite.length) {
+if (missing.length || offsite.length || inline.length) {
   for (const f of missing) console.error(`missing dist/${f}`);
   for (const f of offsite) console.error(`loads from another host: ${f}`);
+  for (const f of inline) console.error(`inline script, which the CSP blocks: ${f}`);
   process.exit(1);
 }
 console.log(`check-dist: ${need.length} pages, nothing loaded from another host`);
