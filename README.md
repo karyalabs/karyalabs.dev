@@ -16,7 +16,7 @@ else.
 | Address | Answered by |
 | --- | --- |
 | `karyalabs.dev/` | the hub: home |
-| `karyalabs.dev/<project>/` | the project's own Worker if it has a route there (gpuicn, Matty), else the hub's page for it (gpui-icons) |
+| `karyalabs.dev/<project>/` | the project's own Worker if it has a route there (gpuicn, Matty), else the hub's page for it (gpui-icons). Both put their web app at `karyalabs.dev/<project>/app/` |
 | `demo.karyalabs.dev/` | the hub: demo index |
 | `demo.karyalabs.dev/<project>/` | the project's own Worker if it has a route there (Matty), else a redirect: to `demo.redirect` from the registry (gpuicn), or to the project's page |
 | `karyalabs.dev/feed.xml` | the hub: Atom feed of every project's releases |
