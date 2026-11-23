@@ -27,8 +27,15 @@ const releases: Record<string, Release[]> = existsSync(releasesFile)
 
 export const projects: Project[] = (loadProjects() as Omit<Project, "releases" | "latest" | "hasShot">[]).map((p) => {
   const list = releases[p.slug] ?? []
+  // {tag} in the main action: the newest release, prereleases included.
+  const get = p.get?.href.includes("{tag}")
+    ? list[0]
+      ? { ...p.get, href: p.get.href.replaceAll("{tag}", list[0].tag) }
+      : { ...p.get, href: `https://github.com/${p.repo}/releases` }
+    : p.get
   return {
     ...p,
+    get,
     releases: list,
     latest: list[0],
     hasShot: Boolean(p.shot) && ["light", "dark"].every((t) => [".webp", "-480.webp", "-720.webp", "-960.webp"].every((s) => existsSync(new URL(`${p.slug}-${t}${s}`, shotsDir)))),
