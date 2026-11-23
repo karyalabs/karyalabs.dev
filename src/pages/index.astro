@@ -13,6 +13,12 @@ const level = (p: Project, seen = new Set<string>()): number => {
   return Math.max(-1, ...p.built_with.map((s) => level(bySlug(s)!, seen))) + 1
 }
 const stack = [...projects].sort((a, b) => level(b) - level(a))
+const top = Math.max(...projects.map((p) => level(p)))
+// Projects on the same level (two apps) share an indent.
+const depth = (p: Project) => top - level(p)
+const list = (names: string[]) =>
+  names.length < 2 ? names.join("") : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`
+const appNames = list(apps.map((p) => p.name))
 
 const recent = allReleases.slice(0, 6)
 const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10)
@@ -21,7 +27,7 @@ const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : 
 ---
 <Base
   title="Karya Labs"
-  description="Karya Labs makes open-source native apps, and the tools they're built with: Matty, gpuicn and gpui-icons."
+  description={`Karya Labs makes open-source native apps, and the tools they're built with: ${list(projects.map((p) => p.name))}.`}
   url="https://karyalabs.dev/"
   current="home"
 >
@@ -54,12 +60,12 @@ const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : 
     <div class="wrap stack-grid">
       <div class="stack-copy">
         <div class="head"><h2>One stack<span class="stop" aria-hidden="true"></span></h2></div>
-        <p>The libraries exist because the app needed them. Matty is built from gpuicn's components and gpui-icons' icons, so each library is used in a real app before it ships.</p>
-        <p>Every app pushes the libraries forward, and every fix in a library reaches the app in its next release.</p>
+        <p>The libraries exist because the apps needed them. {appNames} {apps.length === 1 ? "is" : "are"} built from gpuicn's components and gpui-icons' icons, so each library is used in a real app before it ships.</p>
+        <p>Every app pushes the libraries forward, and every fix in a library reaches the apps in their next release.</p>
       </div>
       <ol class="layers" aria-label="How the projects build on each other">
-        {stack.map((p, i) => (
-          <li style={`--depth: ${i}`}>
+        {stack.map((p) => (
+          <li style={`--depth: ${depth(p)}`}>
             <a class="layer" href={`https://karyalabs.dev/${p.slug}/`}>
               <img src={`/icons/${p.icon}`} width="24" height="24" alt="">
               <span class="n">{p.name} <span class="d">· {p.tagline.replace(/\.$/, "")}</span></span>
@@ -67,7 +73,7 @@ const count = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : 
             </a>
           </li>
         ))}
-        <li style={`--depth: ${stack.length}`}>
+        <li style={`--depth: ${top + 1}`}>
           <a class="layer base" href="https://www.gpui.rs/">
             <span class="blank" aria-hidden="true"></span>
             <span class="n">GPUI <span class="d">· the GPU-accelerated UI framework behind Zed</span></span>
