@@ -47,6 +47,30 @@ links = [{ label = "GitHub", href = "https://github.com/karyalabs/matty" }]
 demo = { note = "A sample workspace with channels, threads and people. Nothing to connect, no account, no server." }
 
 [[project]]
+slug = "bonsai"
+name = "Bonsai"
+repo = "karyalabs/bonsai"
+kind = "app"
+status = "beta"
+tagline = "A native Git client for macOS."
+summary = "History, branches, worktrees and pull requests in one fast native window. It can also purge a leaked file from every commit in a few clicks."
+about = [
+  "Sign in to GitHub, GitLab or Bitbucket to clone, review and comment on pull requests, check CI and work through issues without leaving the app.",
+  "Bonsai runs the Git already on your Mac, so your config and hooks work as they do in Terminal. Purging a file backs up every ref first, then guides the force-push.",
+]
+icon = "bonsai.svg"
+shot = "bonsai/site/compare"
+language = "Rust"
+license = "MIT"
+platforms = ["macOS"]
+built_with = ["gpuicn", "gpui-icons"]
+get = { label = "Download for Mac", href = "https://github.com/karyalabs/bonsai/releases/latest/download/Bonsai.dmg" }
+links = [{ label = "GitHub", href = "https://github.com/karyalabs/bonsai" }]
+facts = [
+  { label = "Requires", value = "macOS 14 or newer, Git 2.31 or newer" },
+]
+
+[[project]]
 slug = "gpuicn"
 name = "gpuicn"
 repo = "karyalabs/gpuicn"
