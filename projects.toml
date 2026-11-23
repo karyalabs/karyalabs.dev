@@ -18,7 +18,10 @@
 #   icon        a file under public/icons/
 #   shot        optional: karyalabs/assets path without "-light-1200.webp"
 #   install     optional: one shell line people copy
-#   get         optional: { label, href } for the main action
+#   get         optional: { label, href } for the main action. {tag} in href
+#               becomes the newest release's tag, prereleases included, so
+#               a download link never lags behind (GitHub's releases/latest
+#               skips prereleases).
 #   links       optional: more { label, href } actions
 #   facts       optional: { label, value } rows for the project page
 #   language, license, platforms   shown on cards and the project page
@@ -64,7 +67,7 @@ language = "Rust"
 license = "MIT"
 platforms = ["macOS"]
 built_with = ["gpuicn", "gpui-icons"]
-get = { label = "Download for Mac", href = "https://github.com/karyalabs/bonsai/releases/latest/download/Bonsai.dmg" }
+get = { label = "Download for Mac", href = "https://github.com/karyalabs/bonsai/releases/download/{tag}/Bonsai.dmg" }
 links = [{ label = "GitHub", href = "https://github.com/karyalabs/bonsai" }]
 facts = [
   { label = "Requires", value = "macOS 14 or newer, Git 2.31 or newer" },
